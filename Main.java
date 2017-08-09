@@ -1,16 +1,53 @@
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+
+
 public class Main {
 
 	public static void main(String[] args) throws IOException {
+		String param1 = args[0]; 
+		String param2 = args[1]; 
 		
-			for(int i = 1; i < 10; i++) {
+		FileOutputStream out = new FileOutputStream("workbook.xls");
+		Workbook wb = new HSSFWorkbook();
+		Sheet s = wb.createSheet("CMA94");
+		Row r = null;
+		r = s.createRow(0);
+		Cell cellulenom = r.createCell(0);
+		cellulenom.setCellValue("Raison sociale");
+		Cell celluleadresse = r.createCell(1);
+		celluleadresse.setCellValue("Adresse");
+		Cell cellulecp = r.createCell(2);
+		cellulecp.setCellValue("Ville");
+		Cell celluletelephone = r.createCell(3);
+		celluletelephone.setCellValue("Téléphone");
+		Cell celluleactivite = r.createCell(4);
+		celluleactivite.setCellValue("Activité");
+		
+			for(int i = Integer.valueOf(param1); i < Integer.valueOf(param2); i++) {
 			
+				r = s.createRow(i);
+				
+				 cellulenom = r.createCell(0);
+				 celluleadresse = r.createCell(1);
+				 cellulecp = r.createCell(2);
+				 celluletelephone = r.createCell(3);
+				 celluleactivite = r.createCell(4);
+				
 				String reponse = readURL("http://www.trouver-une-entreprise-artisanale.cma94.com/entreprise.php?id=" + i);
 				
 								
@@ -28,38 +65,37 @@ public class Main {
 				String debut4 = debut2.substring(indexactivite + "<div class=\"activite\">".length()).trim();
 				int indexfinactivite = debut4.indexOf("</div>");
 				
-
-//				int indexfintel = debut.indexOf("</div>");
-//				int indexactivite = debut.indexOf("<div class=\"activite\">");
-//				int indexfinactivite = debut.indexOf("<div class=\"clear\">");
-				
-				
 							
 				// Le nom :
-				System.out.println(debut.substring(indexH1 + 4, indexFinH1));
+				cellulenom.setCellValue(debut.substring(indexH1 + 4, indexFinH1)) ;
 				
 				// L'adresse :
-				System.out.println(debut.substring(indexFinH1 + 5, indexfinpremiereAdresse).trim());
+				celluleadresse.setCellValue(debut.substring(indexFinH1 + 5, indexfinpremiereAdresse).trim());
 							
-				System.out.println(debut2.substring(0, indexfindeuxiemeAdresse).trim());
+				cellulecp.setCellValue(debut2.substring(0, indexfindeuxiemeAdresse).trim());
 				
 				// Le téléphone :
 				if(indextel != -1) {
 					String debut3 = debut2.substring(indextel);
 					int indexfintel = debut3.indexOf("<br />");
-					System.out.println(debut3.substring(12, indexfintel));
+					celluletelephone.setCellValue(debut3.substring(12, indexfintel));
 				}
 				
-//				System.out.println(debut.substring(indextel + 12, indexfintel - 8).trim());
+
+				// L'activité :
 				
-//				
-//				// L'activité :
-//				
-//				System.out.println(debut.substring(indexactivite + 22, indexfinactivite - 10).trim());
-				System.out.println(debut4.substring(0, indexfinactivite).trim());
-				System.out.println();
+				celluleactivite.setCellValue(debut4.substring(0, indexfinactivite).trim());
+			
+				
+				
+				
+				
+					
 				
 		}
+			wb.write(out);
+			out.close();
+	System.out.println("finish");
 	}
 
 	
