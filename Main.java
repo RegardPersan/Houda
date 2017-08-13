@@ -1,6 +1,7 @@
 package cma;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +19,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException, InterruptedException {
+	public static void main(String[] args) throws IOException  {
 
 		String param1 = args[0];
 		String param2 = args[1];
@@ -42,7 +43,9 @@ public class Main {
 			celluleactivite.setCellValue("Activité");
 			Cell celluledate = r.createCell(5);
 			celluledate.setCellValue("Date");
-
+			Cell celluleid = r.createCell(6);
+			celluleid.setCellValue("ID CMA");
+			
 			int index = 1;
 			for (int i = Integer.valueOf(param1); i < Integer.valueOf(param2); i++) {
 				if (i % 5 == 0) {
@@ -57,6 +60,7 @@ public class Main {
 				celluletelephone = r.createCell(3);
 				celluleactivite = r.createCell(4);
 				celluledate = r.createCell(5);
+				celluleid = r.createCell(6);
 
 				String reponse = readURL(
 						"http://www.trouver-une-entreprise-artisanale.cma94.com/entreprise.php?id=" + i);
@@ -101,7 +105,11 @@ public class Main {
 				cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("mm/dd/yy h:mm:ss"));
 				celluledate.setCellValue(new Date());
 				celluledate.setCellStyle(cellStyle);
+				
+				// L'ID :
 
+				celluleid.setCellValue(i);
+				
 			}
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
